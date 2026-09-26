@@ -1,0 +1,9 @@
+uvicorn[standard]
+pillow
+unstructured
+python-multipart
+requests
+fastapi
+pymupdf
+unstructured_transform_client
+groq
