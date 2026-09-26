@@ -10,6 +10,7 @@ from modules.resume.extractor import ResumeExtractor
 import tempfile
 import os
 from modules.llm.model import extract_resume
+import json
 
 router = APIRouter()
 
@@ -29,9 +30,18 @@ async def parse_resume(file: UploadFile = File(...)):
         markdown = "\n".join(item.get('markdown', '') for item in extracted)
         result = extract_resume(markdown)
         
+        # If the LLM response was incomplete, it is returned under "raw_response".
+        # Attempt to decode it so the API always returns a proper JSON object.
+        if isinstance(result, dict) and "raw_response" in result:
+            try:
+                result = json.loads(result["raw_response"])
+            except Exception:
+                # Keep the original raw string if parsing fails.
+                pass
+        
         return {
             "success": True,
-            "data": {"data": result},
+            "data": result,
             "error": "",
             "filename": file.filename
         }

@@ -59,6 +59,8 @@ def extract_resume(markdown: str) -> dict:
     response = groq_client.chat.completions.create(
         model=DEFAULT_MODEL,
         messages=messages,
+        max_tokens=4000,
+        temperature=0,
     )
 
     # The Groq SDK returns an object with ``choices``; pick the first.
